@@ -215,7 +215,7 @@ for train_index, test_index in kf.split(boxscores):
 
 # Calculate the overall average accuracy for the ensemble
 average_ensemble_accuracy = sum(ensemble_accuracies) / len(ensemble_accuracies)
-print(f"\nAverage Accuracy from Cross-Validation (SGD Ensemble): {average_ensemble_accuracy:.2f}")
+# print(f"\nAverage Accuracy from Cross-Validation (SGD): {average_ensemble_accuracy:.2f}")
 
 # ================================================
 # HEADER: Machine Learning Model Training
@@ -268,8 +268,8 @@ for i in range(10):
 # predictions.
 # ================================================
 correct = 0
-
-for j in range(53):
+n = 35
+for j in range(n):
     teamA = boxscores[boxscores['GTID'] == j*2]
     teamB = boxscores[boxscores['GTID'] == j*2+1]
     # Assign sum of all rows of DataFrame as a new Row
@@ -293,7 +293,7 @@ for j in range(53):
         correct += Awon
     else:
         correct += Bwon
-print(f"\nGame Outcome Prediction Accuracy: {correct/53:.2f}\n")
+print(f"\nGame Outcome Prediction Accuracy: {correct/n:.2f}\n")
 
 X_train = boxscores[['STPS', 'HITS', 'VIO']].copy()
 logreg = LogisticRegression()
