@@ -293,7 +293,7 @@ for j in range(n):
         correct += Awon
     else:
         correct += Bwon
-print(f"\nGame Outcome Prediction Accuracy: {correct/n:.2f}\n")
+print(f"\nGame Outcome Prediction Accuracy using SGD Ensemble: {correct/n:.2f}\n")
 
 X_train = boxscores[['STPS', 'HITS', 'VIO']].copy()
 logreg = LogisticRegression()
