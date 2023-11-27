@@ -6,12 +6,10 @@
 # ================================================
 import pandas as pd
 import numpy as np
-import random as rnd
 import warnings
-import seaborn as sns
 import matplotlib.pyplot as plt
 from sklearn.linear_model import LogisticRegression
-from sklearn.svm import SVC, LinearSVC
+from sklearn.svm import SVC
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.naive_bayes import GaussianNB
@@ -32,7 +30,7 @@ warnings.filterwarnings('ignore')
 # data, splits some columns into multiple columns, 
 # and normalizes certain statistics.
 # ================================================
-train_df = pd.read_csv('Data/TestData/test.csv')
+train_df = pd.read_csv('Data/test.csv')
 for i in ['DFO','OFO','FG','2PT','3PT','4PT','RA','LAYUP','SLAM']:
     train_df[[i+'_mk',i+'_att']] = train_df[i].str.split(' - ',expand=True).astype(int)
     train_df[i+'_pct'] = train_df[i+'_mk'].astype(float)/train_df[i+'_att'].astype(float)
@@ -217,7 +215,7 @@ for train_index, test_index in kf.split(boxscores):
 
 # Calculate the overall average accuracy for the ensemble
 average_ensemble_accuracy = sum(ensemble_accuracies) / len(ensemble_accuracies)
-print(f"Average Accuracy from Cross-Validation (SGD Ensemble): {average_ensemble_accuracy:.2f}")
+print(f"\nAverage Accuracy from Cross-Validation (SGD Ensemble): {average_ensemble_accuracy:.2f}")
 
 # ================================================
 # HEADER: Machine Learning Model Training
@@ -295,9 +293,17 @@ for j in range(53):
         correct += Awon
     else:
         correct += Bwon
-print(f"{correct/53:.2f}")
+print(f"\nGame Outcome Prediction Accuracy: {correct/53:.2f}\n")
 
+X_train = boxscores[['STPS', 'HITS', 'VIO']].copy()
+logreg = LogisticRegression()
+logreg.fit(X_train, Y_train)
+acc_log = round(logreg.score(X_train, Y_train) * 100, 2)
 
+coeff_df = pd.DataFrame(X_train.columns)
+coeff_df.columns = ['Feature']
+coeff_df["Correlation"] = pd.Series(logreg.coef_[0])
+print(coeff_df.sort_values(by='Correlation', ascending=False))
 
 # ================================================
 # HEADER: Saving Processed Data
